@@ -66,6 +66,8 @@ jobs:
           keys: [frontend-scan]
       - run: cd frontend && npm install
       - run: cd frontend && npm audit fix --audit-level=critical --force
+      - run: cd frontend && npm update minimist --depth 4
+      - run: cd frontend && npm update loader-utils --depth 2
       - run: cd frontend && npm audit --audit-level=critical
       - save_cache:
           paths: [frontend/node_modules]
@@ -80,6 +82,8 @@ jobs:
           keys: [backend-scan]
       - run: cd backend && npm install
       - run: cd backend && npm audit fix --audit-level=critical --force
+      - run: cd backend && npm update minimist --depth 4
+      - run: cd backend && npm update loader-utils --depth 2
       - run: cd backend && npm audit --audit-level=critical
       - save_cache:
           paths: [backend/node_modules]
