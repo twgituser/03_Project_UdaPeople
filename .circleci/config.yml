@@ -4,20 +4,7 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
-jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-  
+jobs: 
   build-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -25,8 +12,7 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - run: pwd
-      - run: ls -al
+      - run: cd frontend
       - run: npm install
       - run: npm run build
       - save_cache:
@@ -40,31 +26,17 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build]
+      - run: cd backend         
       - run: npm install
       - run: npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
 
-  say-goodbye:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
-    docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: "Say Goodbye"
-          command: "echo Goodbye!"
-
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   default:
     jobs:
-      - say-hello
       - build-frontend
       - build-backend
-      - say-goodbye
