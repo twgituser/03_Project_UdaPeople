@@ -17,6 +17,7 @@ jobs:
           keys: [frontend-build]
       - run: cd frontend && npm install
       - run: cd frontend && npm run build
+      - run: echo $MY_TEST_ENV
       - run: echo $SLACK_DEFAULT_CHANNEL
       - save_cache:
           paths: [frontend/node_modules]
