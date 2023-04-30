@@ -23,6 +23,9 @@ jobs:
       - slack/notify:
           event: fail
           template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
 
   build-backend:
     docker:
