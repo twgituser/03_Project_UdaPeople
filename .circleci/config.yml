@@ -5,12 +5,24 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.12.3
 
+commands:
+  notify_slack_error:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
+  notify_slack_pass:
+    steps:
+      - slack/notify:
+          event: pass
+          template: basic_success_1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs: 
   build-frontend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:20.0.0
     steps:
       - checkout
       - restore_cache:
@@ -20,10 +32,12 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - notify_slack_error
+      - notify_slack_pass
 
   build-backend:
     docker:
-      - image: circleci/node:13.8.0
+      - image: circleci/node:20.0.0
     steps:
       - checkout
       - restore_cache:
@@ -33,6 +47,8 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - notify_slack_error
+      - notify_slack_pass
 
   test-frontend:
     docker:
