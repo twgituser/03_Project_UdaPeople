@@ -114,6 +114,3 @@ workflows:
           requires: [build-frontend]
       - scan-backend:
           requires: [build-backend]
-      - notify:
-          context:
-            - uda-context
