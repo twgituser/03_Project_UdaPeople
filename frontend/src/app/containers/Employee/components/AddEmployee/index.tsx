@@ -43,7 +43,7 @@ export namespace AddEmployee {
     phoneNumber: string;
     address: string;
     bankName: string;
-    accountNumber: string;
+    accountNumber: stringx;
     tags: [];
     country: '';
     region: '';
