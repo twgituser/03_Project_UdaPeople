@@ -20,6 +20,9 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   build-backend:
     docker:
@@ -93,18 +96,13 @@ jobs:
           paths: [backend/node_modules]
           key: backend-scan
 
-  notify:
-    steps:
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
-
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   default:
     jobs:
-      - build-frontend
+      - build-frontend:
+          context: uda-context
       - build-backend
       - test-frontend:
           requires: [build-frontend]
