@@ -10,25 +10,38 @@ orbs:
 jobs: 
   build-frontend:
     docker:
-      - image: circleci/node:15.14.0
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
           keys: [frontend-build]
       - run: cd frontend && npm install
       - run: cd frontend && npm run build
-      - run: echo ${MY_TEST_ENV}
-      - run: echo $VAR_DONT_EXIST
-      - run: echo $SLACK_DEFAULT_CHANNEL
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+
+  notify:
+    docker:
+      - image: cimg/base:stable
+    steps:
       - slack/notify:
-          event: fail
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a text notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: always
 
   # build-backend:
   #   docker:
@@ -57,17 +70,17 @@ jobs:
   #         key: frontend-test
 
   # test-backend:
-    # docker:
-    #   - image: circleci/node:13.8.0
-    # steps:
-    #   - checkout
-    #   - restore_cache:
-    #       keys: [backend-test]
-    #   - run: cd backend && npm install
-    #   - run: cd backend && npm run test
-    #   - save_cache:
-    #       paths: [backend/node_modules]
-    #       key: backend-test
+  #   docker:
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [backend-test]
+  #     - run: cd backend && npm install
+  #     - run: cd backend && npm run test
+  #     - save_cache:
+  #         paths: [backend/node_modules]
+  #         key: backend-test
 
   # scan-frontend:
   #   docker:
@@ -86,35 +99,36 @@ jobs:
   #         key: frontend-scan
 
   # scan-backend:
-    # docker:
-    #   - image: circleci/node:13.8.0
-    # steps:
-    #   - checkout
-    #   - restore_cache:
-    #       keys: [backend-scan]
-    #   - run: cd backend && npm install
-    #   - run: cd backend && npm audit fix --audit-level=critical --force
-    #   - run: cd backend && npm update minimist --depth 4
-    #   - run: cd backend && npm update loader-utils --depth 2
-    #   - run: cd backend && npm update mkdirp --depth 2
-    #   - run: cd backend && npm audit --audit-level=critical
-    #   - save_cache:
-    #       paths: [backend/node_modules]
-    #       key: backend-scan
+  #   docker:
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [backend-scan]
+  #     - run: cd backend && npm install
+  #     - run: cd backend && npm audit fix --audit-level=critical --force
+  #     - run: cd backend && npm update minimist --depth 4
+  #     - run: cd backend && npm update loader-utils --depth 2
+  #     - run: cd backend && npm update mkdirp --depth 2
+  #     - run: cd backend && npm audit --audit-level=critical
+  #     - save_cache:
+  #         paths: [backend/node_modules]
+  #         key: backend-scan
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   default:
     jobs:
-      - build-frontend:
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - notify:
           context: uda-context
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      # - scan-backend:
-      #     requires: [build-backend]
