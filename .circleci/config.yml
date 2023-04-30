@@ -57,17 +57,17 @@ jobs:
   #         key: frontend-test
 
   # test-backend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [backend-test]
-      - run: cd backend && npm install
-      - run: cd backend && npm run test
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-test
+    # docker:
+    #   - image: circleci/node:13.8.0
+    # steps:
+    #   - checkout
+    #   - restore_cache:
+    #       keys: [backend-test]
+    #   - run: cd backend && npm install
+    #   - run: cd backend && npm run test
+    #   - save_cache:
+    #       paths: [backend/node_modules]
+    #       key: backend-test
 
   # scan-frontend:
   #   docker:
@@ -86,21 +86,21 @@ jobs:
   #         key: frontend-scan
 
   # scan-backend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [backend-scan]
-      - run: cd backend && npm install
-      - run: cd backend && npm audit fix --audit-level=critical --force
-      - run: cd backend && npm update minimist --depth 4
-      - run: cd backend && npm update loader-utils --depth 2
-      - run: cd backend && npm update mkdirp --depth 2
-      - run: cd backend && npm audit --audit-level=critical
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-scan
+    # docker:
+    #   - image: circleci/node:13.8.0
+    # steps:
+    #   - checkout
+    #   - restore_cache:
+    #       keys: [backend-scan]
+    #   - run: cd backend && npm install
+    #   - run: cd backend && npm audit fix --audit-level=critical --force
+    #   - run: cd backend && npm update minimist --depth 4
+    #   - run: cd backend && npm update loader-utils --depth 2
+    #   - run: cd backend && npm update mkdirp --depth 2
+    #   - run: cd backend && npm audit --audit-level=critical
+    #   - save_cache:
+    #       paths: [backend/node_modules]
+    #       key: backend-scan
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
