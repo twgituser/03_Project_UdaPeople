@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.1
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
 jobs: 
@@ -89,6 +92,13 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-scan
+
+  notify:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
@@ -104,3 +114,6 @@ workflows:
           requires: [build-frontend]
       - scan-backend:
           requires: [build-backend]
+      - notify:
+          context:
+            - uda-context
