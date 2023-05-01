@@ -14,6 +14,10 @@ Resources:
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerEnforced
+      BlockPublicAcls: false
+      BlockPublicPolicy: false
+      IgnorePublicAcls: false
+      RestrictPublicBuckets: false
       # AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
