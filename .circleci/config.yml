@@ -57,8 +57,12 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build]   
-      - run: cd backend && npm install
-      - run: cd backend && npm run build
+      - run:
+          name: Build back-end
+          command: |
+            cd backend
+            npm install
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -72,8 +76,12 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-test]
-      - run: cd frontend && npm install
-      - run: cd frontend && npm run test
+      - run: 
+          name: Test front-end
+          command: |
+            cd frontend
+            npm install
+            npm run test
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-test
@@ -85,8 +93,12 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-test]
-      - run: cd backend && npm install
-      - run: cd backend && npm run test
+      - run: 
+          name: Test back-end
+          command: |
+            cd backend
+            npm install
+            npm run test
       - save_cache:
           paths: [backend/node_modules]
           key: backend-test
@@ -98,11 +110,15 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-scan]
-      - run: cd frontend && npm install
-      - run: cd frontend && npm audit fix --audit-level=critical --force
-      - run: cd frontend && npm update minimist --depth 4
-      - run: cd frontend && npm update loader-utils --depth 2
-      - run: cd frontend && npm audit --audit-level=critical
+      - run: 
+          name: Scan frontend
+          command: |
+            cd frontend 
+            npm install
+            npm audit fix --audit-level=critical --force
+            npm update minimist --depth 4
+            npm update loader-utils --depth 2
+            npm audit --audit-level=critical
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-scan
@@ -114,12 +130,16 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-scan]
-      - run: cd backend && npm install
-      - run: cd backend && npm audit fix --audit-level=critical --force
-      - run: cd backend && npm update minimist --depth 4
-      - run: cd backend && npm update loader-utils --depth 2
-      - run: cd backend && npm update mkdirp --depth 2
-      - run: cd backend && npm audit --audit-level=critical
+      - run:
+          name: Scan backend
+          command: |
+            cd backend 
+            npm install
+            npm audit fix --audit-level=critical --force
+            npm update loader-utils --depth 2
+            npm update minimist --depth 4
+            npm update mkdirp --depth 2
+            npm audit --audit-level=critical
       - save_cache:
           paths: [backend/node_modules]
           key: backend-scan
