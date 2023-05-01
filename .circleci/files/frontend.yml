@@ -11,6 +11,9 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub "udapeople-${ID}"
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
       # AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
