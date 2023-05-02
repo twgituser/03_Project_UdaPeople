@@ -215,6 +215,7 @@ jobs:
           name: Revert last migration to test kvdb
           command: | 
             cd backend
+            npm install
             npm run migrations:revert
       - run:
           name: Run migrations
