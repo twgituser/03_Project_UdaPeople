@@ -246,13 +246,17 @@ jobs:
       - image: amazon/aws-cli      # Docker image here that supports AWS CLI
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/
+      - run:
+          name: Install tar and gzip
+          command: |
+            yum install -y tar gzip
       - run:
           name: Install dependencies
           command: |
             cd frontend
             npm install
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
@@ -280,12 +284,12 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["1f:82:21:db:3c:91:01:23:f9:f8:59:5c:0f:a9:ea:43"]
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
             apk add --update tar gzip ansible nodejs npm
+      - attach_workspace:
+          at: ~/
       - run:
           name: Deploy backend
           command: |
