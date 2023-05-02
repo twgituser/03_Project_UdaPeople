@@ -251,7 +251,6 @@ jobs:
           command: |
             yum install -y tar gzip
             curl -fsSL https://rpm.nodesource.com/setup_13.x | bash - && yum -y install nodejs
-            yum install npm
       - run:
           name: Install dependencies
           command: |
