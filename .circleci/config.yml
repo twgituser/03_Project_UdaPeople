@@ -239,7 +239,6 @@ jobs:
                   curl -k https://kvdb.io/AsNAdsH9vpzxyjojR3TQv3/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
                   echo "after key sent to kvdb"
                 fi
-                exit 1
       - destroy-environment
 
   deploy-frontend:
@@ -247,16 +246,21 @@ jobs:
       - image: amazon/aws-cli      # Docker image here that supports AWS CLI
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            cd frontend
+            npm install
       - run:
           name: Get backend url
           command: |
-            # your code here
+            export BACKEND_IP=$(aws ec2 describe-instances...............)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
