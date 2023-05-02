@@ -212,6 +212,11 @@ jobs:
       # - restore_cache:
       #     keys: [backend-build]
       - run:
+          name: Revert last migration to test kvdb
+          command: | 
+            cd backend
+            npm run migrations:revert
+      - run:
           name: Run migrations
           command: |
             cd backend
