@@ -217,10 +217,11 @@ jobs:
             cd backend
             npm install
             echo "after install before running migration"
-            cat ~/project/backend/migrations_dump.txt
+          # cat ~/project/backend/migrations_dump.txt
             npm run migrations > migrations_dump.txt
             echo "after migration"
             cat ~/project/backend/migrations_dump.txt
+            echo "after cat....."
       - run:
           name: Send migration results to kvdb
           command: |
