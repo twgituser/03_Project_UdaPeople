@@ -301,9 +301,11 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             echo "I am installed here:"
             pwd
+            cp backend/artifact.tar.gz .circleci/ansible/deploy/files/
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml     
       - destroy-environment
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
