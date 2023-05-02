@@ -133,9 +133,11 @@ jobs:
             npm run build
             cd ..
             cp backend/test/jest-e2e.json .
+            tar -C backend -czvf artifact.tar.gz .
             echo "I am installed here:"
             pwd
             mv jest-e2e.json .circleci/ansible/roles/deploy/files
+            mv artifact.tar.gz .circleci/ansible/roles/deploy/files
             echo "files in deploy files folder -----------------"
             cd .circleci/ansible/roles/deploy/files
             ls -al
