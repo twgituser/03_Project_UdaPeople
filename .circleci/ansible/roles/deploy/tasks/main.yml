@@ -3,6 +3,12 @@
     path: ~/backend-tmp
     state: directory
 
+- name: "checks"
+  shell: |
+    echo "I am now here...."
+    pwd
+    ls -al
+
 - name: "Unarchive files into new directory"
   unarchive:
     src: artifact.tar.gz
