@@ -206,17 +206,20 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:14.18.2
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      # - restore_cache:
+      #     keys: [backend-build]
       - run:
           name: Run migrations
           command: |
             cd backend
             npm install
+            echo "after install before running migration"
+            cat ~/project/backend/migrations_dump.txt
             npm run migrations > migrations_dump.txt
+            echo "after migration"
             cat ~/project/backend/migrations_dump.txt
       - run:
           name: Send migration results to kvdb
