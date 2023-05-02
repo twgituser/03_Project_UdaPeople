@@ -1,0 +1,17 @@
+- name: "Create target directory"
+  file:
+    path: ~/backend-tmp
+    state: directory
+
+- name: "Unarchive files into new directory"
+  unarchive:
+    src: artifact.tar.gz
+    dest: ~/backend-tmp
+
+- name: "Install dependencies and start app"
+  shell: |
+    cd ~/backend-tmp
+    npm install
+    cd  dist
+    pm2 stop default
+    pm2 start npm -- start
