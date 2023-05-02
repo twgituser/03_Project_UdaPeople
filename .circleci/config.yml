@@ -113,43 +113,6 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
 
-  run-migrations:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [backend-build]
-      - run:
-          name: Install AWS CLI v2
-          command: |
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-      # - run:
-      #     name: Revert last migration to test kvdb
-      #     command: | 
-      #       cd backend
-      #       npm install
-      #       npm run migrations:revert
-      - run:
-          name: Run migrations
-          command: |
-            cd backend
-            npm install
-            npm run migrations > migrations_dump.txt
-            cat ~/project/backend/migrations_dump.txt
-      - run:
-          name: Send migration results to kvdb
-          command: |
-            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-            then
-              echo "before key sent to kvdb"
-              curl -k https://kvdb.io/AsNAdsH9vpzxyjojR3TQv3/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
-              echo "after key sent to kvdb"
-            fi
-      - destroy-environment
-
   deploy-backend:
     docker:
       - image: cimg/base:stable
@@ -169,13 +132,14 @@ jobs:
             npm install
             npm run build
             cd ..
-            tar -C backend -czvf artifact.tar.gz .
+            cp backend/test/jest-e2e.json .
             echo "I am installed here:"
             pwd
-            cp artifact.tar.gz .circleci/ansible/roles/deploy/files
+            mv jest-e2e.json .circleci/ansible/roles/deploy/files
             echo "files in deploy files folder -----------------"
-            ls -al .circleci/ansible/roles/deploy/files
-            cd .circleci/ansible
+            cd .circleci/ansible/roles/deploy/files
+            ls -al
+            cd ../../../../../.circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml     
@@ -191,7 +155,5 @@ workflows:
           requires: [build-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
       - deploy-backend:
-          requires: [run-migrations]
+          requires: [configure-infrastructure]

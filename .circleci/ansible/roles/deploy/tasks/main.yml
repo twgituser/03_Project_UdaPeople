@@ -3,21 +3,29 @@
     path: ~/backend-tmp
     state: directory
 
+- name: Copy test file
+  template:
+    src: "files/test.txt"
+    dest: "~/backend-tmp/test.txt"
+
+# - name: "Unarchive files into new directory"
+#   unarchive:
+#     src: artifact.tar.gz
+#     dest: ~/backend-tmp
+
+    # npm install
+    # cd  dist
+    # pm2 stop default
+    # pm2 start npm -- start
 - name: "checks"
   shell: |
     echo "I am now here...."
     pwd
     ls -al
 
-- name: "Unarchive files into new directory"
-  unarchive:
-    src: artifact.tar.gz
-    dest: ~/backend-tmp
-
 - name: "Install dependencies and start app"
   shell: |
     cd ~/backend-tmp
-    npm install
-    cd  dist
-    pm2 stop default
-    pm2 start npm -- start
+    echo "I am now here...."
+    pwd
+    ls -al
