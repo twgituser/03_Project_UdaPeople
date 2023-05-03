@@ -321,9 +321,7 @@ jobs:
           working_directory: /tmp
           command: |
             apk add --update ansible curl rsync openssh nodejs npm
-            ansible --version
             pip install awscli
-            aws --version
       - run:
           name: Deploy backend
           command: |
@@ -355,7 +353,8 @@ jobs:
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
-              exit 0
+              echo "Intentional fail! - Change below to exit 0 and remove this echo"
+              exit 1
             else
               exit 1
             fi
@@ -366,7 +365,7 @@ jobs:
             echo ${URL} 
             if curl ${URL} | grep "Welcome"
             then
-              exit 0
+              exit 0 
             else
               exit 1
             fi
