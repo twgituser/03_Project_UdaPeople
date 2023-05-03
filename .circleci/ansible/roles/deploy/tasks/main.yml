@@ -1,19 +1,14 @@
-- name: "Create target directory"
+- name: Create target directory
   file:
     path: ~/backend-tmp
     state: directory
 
-- name: Copy test file
-  template:
-    src: "files/test.txt"
-    dest: "~/backend-tmp/test.txt"
-
-- name: "Unarchive files into new directory"
+- name: Unarchive files into new directory
   unarchive:
-    src: "files/artifact.tar.gz"
-    dest: "~/backend-tmp/"
+    src: files/artifact.tar.gz
+    dest: ~/backend-tmp/
 
-- name: "Install dependencies and start app"
+- name: Install dependencies and start app
   shell: |
     cd ~/backend-tmp
     npm install
