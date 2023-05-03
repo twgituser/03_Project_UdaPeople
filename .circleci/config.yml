@@ -365,6 +365,7 @@ jobs:
     steps:
       - checkout
       - install_awscli
+      - install_node_js
       - run:
           name: smoke-test backend
           command: |
