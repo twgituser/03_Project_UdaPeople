@@ -24,9 +24,9 @@ commands:
       # Add parameter here     
     steps:
       - run:
-          name: Revert migrations
+          name: Revert migration
           # Add when this will run
-          when: on fail
+          when: on_fail
           command: |
             SUCCESS=$(curl -k https://kvdb.io/AsNAdsH9vpzxyjojR3TQv3/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if(( $SUCCESS==1 )); 
