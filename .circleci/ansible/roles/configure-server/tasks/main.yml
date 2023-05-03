@@ -1,9 +1,19 @@
 
 ---
-- name: "upgrade packages."
+- name: "Update apt packages"
+  become: true
+  apt:
+    update_cache: yes
+
+- name: "Upgrade apt packages."
   become: true
   apt:
     upgrade: "yes"
+
+- name: "Remove redundant dependencies"
+  become: true
+  apt:
+    autoremove: yes
 
 - name: "install node and npm."
   become: true
