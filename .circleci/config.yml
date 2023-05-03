@@ -6,6 +6,36 @@ orbs:
   slack: circleci/slack@4.12.3
 
 commands:
+
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+
+  revert-migration:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      # Add parameter here     
+    steps:
+      - run:
+          name: Revert migrations
+          # Add when this will run
+          when: on fail
+          command: |
+            SUCCESS=$(curl -k https://kvdb.io/AsNAdsH9vpzxyjojR3TQv3/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            if(( $SUCCESS==1 )); 
+            then
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
+            fi
+
   install_awscli:
     description: Install AWS CLI
     steps:
@@ -15,6 +45,7 @@ commands:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
+
   install_ansible:
     description: Install Ansible
     steps:
@@ -25,6 +56,7 @@ commands:
             sudo apt install software-properties-common -y
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible -y
+
   install_nodejs:
     description: Install Node.js 13
     steps:
@@ -45,17 +77,6 @@ commands:
       - slack/notify:
           event: pass
           template: basic_success_1
-
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    steps:
-      - run:
-          name: Destroy environments
-          when: on_fail
-          command: |
-            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/configuration-reference/#jobs
@@ -246,12 +267,13 @@ jobs:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
             unzip awscliv2.zip
             sudo ./aws/install
-      # - run:
-      #     name: Revert last migration to test kvdb
-      #     command: | 
-      #       cd backend
-      #       npm install
-      #       npm run migrations:revert
+      # remove the below when rollback tested
+      - run:
+          name: Revert last migration to test kvdb
+          command: | 
+            cd backend
+            npm install
+            npm run migrations:revert
       - run:
           name: Run migrations
           command: |
@@ -269,6 +291,7 @@ jobs:
               echo "after key sent to kvdb"
             fi
       - destroy-environment
+      - revert-migration
 
   deploy-frontend:
     docker:
@@ -353,8 +376,7 @@ jobs:
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
-              echo "Intentional fail! - Change below to exit 0 and remove this echo"
-              exit 1
+              exit 0
             else
               exit 1
             fi
@@ -365,11 +387,13 @@ jobs:
             echo ${URL} 
             if curl ${URL} | grep "Welcome"
             then
-              exit 0 
+              echo "Added exit 1 to intentional fail smoke test to validate rollback!"
+              exit 1 
             else
               exit 1
             fi
-
+      - destroy-environment
+      - revert-migration
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
