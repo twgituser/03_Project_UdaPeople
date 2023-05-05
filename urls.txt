@@ -1,0 +1,11 @@
+
+[URL01] - Public URL to GitHub repository
+https://github.com/twgituser/03_Project_UdaPeople
+
+[URL02] - Public URL for S3 Bucket
+
+[URL03] - Public URL for Cloudfront distribution
+
+[URL04] - Public URL to deployed application back-end in EC2 
+
+[URL05] - Public URL to Prometheus Server
