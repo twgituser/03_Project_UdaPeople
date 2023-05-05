@@ -1,11 +1,14 @@
-
-[URL01] - Public URL to GitHub repository
+[URL01] - Public Url to GitHub repository (not private)
 https://github.com/twgituser/03_Project_UdaPeople
 
-[URL02] - Public URL for S3 Bucket
+[URL02] - Public URL for your S3 Bucket
+http://udapeople-467f08d.s3-website-us-east-1.amazonaws.com/#/employees
 
-[URL03] - Public URL for Cloudfront distribution
+[URL03] - Public URL for your CloudFront distribution
+http://d6ry39sgnqpkp.cloudfront.net
+  
+[URL04] - Public URLs to deployed application back-end in EC2
+http://3.93.67.208:3030/api/status
 
-[URL04] - Public URL to deployed application back-end in EC2 
-
-[URL05] - Public URL to Prometheus Server
+[URL05] = Public URL to your Prometheus Server
+http://ec2-3-86-142-28.compute-1.amazonaws.com:9090/targets
